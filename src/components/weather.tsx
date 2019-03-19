@@ -63,5 +63,6 @@ export function Weather(props: WeatherProps) {
       <Temperature temp={data.main.temp_max} fontSize={32} />
     </div>
     <h2>{props.cityName}, <span style={{ textTransform: "uppercase" }}>{props.countryCode}</span> </h2>
+    <img src={process.env.PUBLIC_URL + `/assets/icons/${data.weather[0].icon}.svg`} />
   </div>
 }
