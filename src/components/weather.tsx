@@ -8,6 +8,17 @@ function kToC(deg: number) {
   return deg - 273.15
 }
 
+interface TemperatureProps {
+  temp: number;
+  fontSize: number;
+}
+
+function Temperature(props: TemperatureProps) {
+  return <p style={{ padding: 0, margin: 0, fontSize: props.fontSize }}>
+    {kToC(props.temp).toFixed(1)}
+  </p>
+}
+
 interface WeatherProps {
   cityName: string;
   countryCode: string;
@@ -47,9 +58,9 @@ export function Weather(props: WeatherProps) {
       alignItems: "center",
       justifyContent: "center"
     }}>
-      <h3>{kToC(data.main.temp_min).toFixed(1)}</h3>
-      <h1>{kToC(data.main.temp).toFixed(1)}</h1>
-      <h3>{kToC(data.main.temp_max).toFixed(1)}</h3>
+      <Temperature temp={data.main.temp_min} fontSize={32} />
+      <Temperature temp={data.main.temp} fontSize={48} />
+      <Temperature temp={data.main.temp_max} fontSize={32} />
     </div>
     <h2>{props.cityName}, <span style={{ textTransform: "uppercase" }}>{props.countryCode}</span> </h2>
   </div>
