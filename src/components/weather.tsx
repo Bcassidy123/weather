@@ -80,6 +80,8 @@ export function Weather(props: WeatherProps) {
     width: 300,
     height: 400,
   }}>
+    <h2 style={{ textTransform: "uppercase", margin: 0, padding: 0 }}>{props.countryCode}</h2>
+    <h2 style={{ textTransform: "capitalize", margin: 0, padding: 0 }}>{props.cityName}</h2>
     <div style={{
       display: "flex",
       flexDirection: "row",
@@ -90,7 +92,6 @@ export function Weather(props: WeatherProps) {
       <Temperature temp={data.main.temp} fontSize={48} />
       <Temperature temp={data.main.temp_max} fontSize={32} />
     </div>
-    <h2>{props.cityName}, <span style={{ textTransform: "uppercase" }}>{props.countryCode}</span> </h2>
     <div style={{
       margin: 0,
       padding: 0,
