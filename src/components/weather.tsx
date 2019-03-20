@@ -128,8 +128,11 @@ export function Weather(props: WeatherProps) {
   }, [props.cityName, props.countryCode])
 
   return <div>
-    <h2 style={{ textTransform: "uppercase", margin: 0, padding: 0 }}>{props.countryCode}</h2>
-    <h2 style={{ textTransform: "capitalize", margin: 0, padding: 0 }}>{props.cityName}</h2>
+    <h2>
+      <span style={{ textTransform: "uppercase" }}>{props.countryCode}</span>
+      <br />
+      <span style={{ textTransform: "capitalize" }}>{props.cityName}</span>
+    </h2>
     <CurrentWeather data={data} />
   </div>
 }
