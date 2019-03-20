@@ -1,5 +1,6 @@
 import React, { useState, useEffect, CSSProperties } from 'react'
 import { defaultCurrentWeather, OpenWeather } from '../api/openweather';
+import styled from 'styled-components';
 
 function fToC(deg: number) {
   return (deg - 32) * 5 / 9
@@ -29,21 +30,31 @@ interface DetailedProps {
 }
 
 function Detailed(props: DetailedProps) {
+  const Dd = styled.dd`
+    text-align: right;
+    padding: 0; 
+    margin: 0; 
+  `
+  const Dl = styled.dl`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  `
   return <dl style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }} >
     <dt>Temp</dt>
-    <dd style={{ textAlign: "right", padding: 0, margin: 0 }}>{kToC(props.temp).toFixed(1)}&deg;C</dd>
+    <Dd>{kToC(props.temp).toFixed(1)}&deg;C</Dd>
     <dt>Temp Min</dt>
-    <dd style={{ textAlign: "right", padding: 0, margin: 0 }}>{kToC(props.temp_min).toFixed(1)}&deg;C</dd>
+    <Dd>{kToC(props.temp_min).toFixed(1)}&deg;C</Dd>
     <dt>Temp Max</dt>
-    <dd style={{ textAlign: "right", padding: 0, margin: 0 }}>{kToC(props.temp_max).toFixed(1)}&deg;C</dd>
+    <Dd>{kToC(props.temp_max).toFixed(1)}&deg;C</Dd>
     <dt>Pressure</dt>
-    <dd style={{ textAlign: "right", padding: 0, margin: 0 }}>{props.pressure}hPa</dd>
+    <Dd>{props.pressure}hPa</Dd>
     <dt>Humidity</dt>
-    <dd style={{ textAlign: "right", padding: 0, margin: 0 }}>{props.humidity}%</dd>
+    <Dd>{props.humidity}%</Dd>
     <dt>Wind</dt>
-    <dd style={{ textAlign: "right", padding: 0, margin: 0 }}>{props.wind.speed}km/h {props.wind.deg}&deg;</dd>
+    <Dd>{props.wind.speed}km/h {props.wind.deg}&deg;</Dd>
   </dl>
 }
+
 
 interface CurrentWeatherProps {
   data: OpenWeather.CurrentWeather
@@ -54,31 +65,32 @@ function CurrentWeather(props: CurrentWeatherProps) {
   const [details, setDetails] = useState(false)
   const [autoDetailed, setAutoDetailed] = useState(true)
 
-  return <div style={{
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  }}>
-    <div style={{
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center"
-    }}>
+  const Temperatures = styled.div`
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+  `
+  const Details = styled.div`
+      margin: 0;
+      padding: 0;
+      background: none;
+      width: 250px;
+      height: 250px;
+  `
+  const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  `
+  return <Wrapper >
+    <Temperatures>
       <Temperature temp={data.main.temp_min} fontSize={32} />
       <Temperature temp={data.main.temp} fontSize={48} />
       <Temperature temp={data.main.temp_max} fontSize={32} />
-    </div>
-    <div style={{
-      margin: 0,
-      padding: 0,
-      background: "none",
-      width: 250,
-      height: 250,
-      borderRadius: 20,
-      border: 0,
-    }}
+    </Temperatures>
+    <Details
       onMouseEnter={() => autoDetailed && setDetails(true)}
       onMouseLeave={() => autoDetailed && setDetails(false)}
     >
@@ -98,9 +110,10 @@ function CurrentWeather(props: CurrentWeatherProps) {
           wind={data.wind}
         />
       </div>
-    </div>
-  </div>
+    </Details>
+  </Wrapper>
 }
+
 
 interface WeatherProps {
   cityName: string;
@@ -127,12 +140,24 @@ export function Weather(props: WeatherProps) {
       })
   }, [props.cityName, props.countryCode])
 
-  return <div>
+  const CountryCode = styled.span`
+    text-transform: uppercase;
+  `
+  const CountryName = styled.span`
+    text-transform: capitalize;
+  `
+  const Wrapper = styled.div`
+    display: grid;
+    grid-template-areas:
+      "heading"
+      "current";
+  `
+  return <Wrapper>
     <h2>
-      <span style={{ textTransform: "uppercase" }}>{props.countryCode}</span>
+      <CountryCode>{props.countryCode}</CountryCode>
       <br />
-      <span style={{ textTransform: "capitalize" }}>{props.cityName}</span>
+      <CountryName>{props.cityName}</CountryName>
     </h2>
     <CurrentWeather data={data} />
-  </div>
+  </Wrapper>
 }
