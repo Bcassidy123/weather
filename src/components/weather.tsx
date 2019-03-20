@@ -45,43 +45,21 @@ function Detailed(props: DetailedProps) {
   </dl>
 }
 
-interface WeatherProps {
-  cityName: string;
-  countryCode: string;
+interface CurrentWeatherProps {
+  data: OpenWeather.CurrentWeather
 }
 
-export function Weather(props: WeatherProps) {
-  const [data, setData] = useState(defaultCurrentWeather)
+function CurrentWeather(props: CurrentWeatherProps) {
+  const { data } = props;
   const [details, setDetails] = useState(false)
   const [autoDetailed, setAutoDetailed] = useState(true)
-  useEffect(() => {
-    fetch(`https://samples.openweathermap.org/data/2.5/weather?q=${props.cityName},${props.countryCode}&appid=b6907d289e10d714a6e88b30761fae22`)
-      .then(res => {
-        console.log(res)
-        if (res.ok) {
-          res.json().then((json: OpenWeather.CurrentWeather) => {
-            setData(json)
-          })
-        } else {
-          console.log(res.statusText)
-        }
-      }).catch((e) => {
-        console.log(e.message)
-      })
-  }, [props.cityName, props.countryCode])
 
   return <div style={{
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    background: "pink",
-    borderRadius: 20,
-    width: 300,
-    height: 400,
   }}>
-    <h2 style={{ textTransform: "uppercase", margin: 0, padding: 0 }}>{props.countryCode}</h2>
-    <h2 style={{ textTransform: "capitalize", margin: 0, padding: 0 }}>{props.cityName}</h2>
     <div style={{
       display: "flex",
       flexDirection: "row",
@@ -121,5 +99,37 @@ export function Weather(props: WeatherProps) {
         />
       </div>
     </div>
+  </div>
+}
+
+interface WeatherProps {
+  cityName: string;
+  countryCode: string;
+}
+
+export function Weather(props: WeatherProps) {
+  const [data, setData] = useState(defaultCurrentWeather)
+  const [details, setDetails] = useState(false)
+  const [autoDetailed, setAutoDetailed] = useState(true)
+  useEffect(() => {
+    fetch(`https://samples.openweathermap.org/data/2.5/weather?q=${props.cityName},${props.countryCode}&appid=b6907d289e10d714a6e88b30761fae22`)
+      .then(res => {
+        console.log(res)
+        if (res.ok) {
+          res.json().then((json: OpenWeather.CurrentWeather) => {
+            setData(json)
+          })
+        } else {
+          console.log(res.statusText)
+        }
+      }).catch((e) => {
+        console.log(e.message)
+      })
+  }, [props.cityName, props.countryCode])
+
+  return <div>
+    <h2 style={{ textTransform: "uppercase", margin: 0, padding: 0 }}>{props.countryCode}</h2>
+    <h2 style={{ textTransform: "capitalize", margin: 0, padding: 0 }}>{props.cityName}</h2>
+    <CurrentWeather data={data} />
   </div>
 }
