@@ -3,6 +3,7 @@ import * as OpenWeather from '../api/openweather';
 import styled from 'styled-components';
 import CurrentWeather from './CurrentWeather'
 import Forecast from './Forecast'
+import { H1 } from './Common'
 
 interface WeatherProps {
   cityName: string;
@@ -53,14 +54,12 @@ export function Weather(props: WeatherProps) {
       "heading heading"
       "current forecast";
   `
-  const Heading = styled.h2`
+  const Heading = styled(H1)`
     grid-area: heading;
   `
   return <Wrapper>
     <Heading>
-      <CountryCode>{props.countryCode}</CountryCode>
-      <br />
-      <CountryName>{props.cityName}</CountryName>
+      <CountryCode>{props.countryCode}</CountryCode>, <CountryName>{props.cityName}</CountryName>
     </Heading>
     <CurrentWeather data={currentWeatherData} />
     <Forecast data={forecastData} />
