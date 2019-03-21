@@ -13,37 +13,20 @@ interface DayForecastProps {
   list: {
     dt: Date;
     temp: number;
-  }[];
+  }[]; // length > 4
 }
 
-function DayForecast(props: DayForecastProps) {
-  const Ol = styled.ol`
-    display: flex;
-    list-style: none;
-    justify-content: space-between;
-    text-align: right;
-  `
-  const Li = styled.li`
+function MidDayForecast(props: DayForecastProps) {
+  const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: center;
   `
-  const Wrapper = styled.div`
-    display: grid;
-    grid-template-areas: "date list";
-  `
+  const forecast = props.list[4]
+  const averageTemp = (props.list[3].temp + props.list[4].temp) / 2;
   return <Wrapper>
-    <h3>
-      {props.list[0].dt.getDate()}/{props.list[0].dt.getMonth() + 1}
-    </h3>
-    <Ol>
-      {props.list.map(x => {
-        return <Li key={x.dt.getTime()}>
-          <h4>{x.dt.getHours()}</h4>
-          <h3>{kToC(x.temp).toFixed(1)}</h3>
-        </Li>
-      })}
-    </Ol>
+    <h3>{forecast.dt.getDate()}/{forecast.dt.getMonth() + 1}</h3>
+    <h3>{kToC(averageTemp).toFixed(1)}</h3>
   </Wrapper>
 }
 
@@ -66,11 +49,23 @@ export default function Forecast(props: ForecastProps) {
     dateString = currentDateString
     lists.push(data.filter(x => x.dt.toLocaleDateString() == dateString))
   }
+  const middayLists = lists.filter(x => x.length > 4)
 
+  const Ol = styled.ol`
+    display: flex;
+    list-style: none;
+    justify-content: space-between;
+    text-align: center;
+  `
+  const Li = styled.li`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  `
   return <div>
     <H2>Forecast</H2>
-    <ol>
-      {lists.map(x => <li key={x[0].dt.getTime()}><DayForecast list={x} /></li>)}
-    </ol>
+    <Ol>
+      {middayLists.map(x => <li key={x[0].dt.getTime()}><MidDayForecast list={x} /></li>)}
+    </Ol>
   </div>
 }
