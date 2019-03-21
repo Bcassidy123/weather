@@ -60,6 +60,12 @@ interface CurrentWeatherProps {
   data: OpenWeather.CurrentWeather.RootObject
 }
 
+const H2 = styled.h2`
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: center;
+`
 function CurrentWeather(props: CurrentWeatherProps) {
   const { data } = props;
 
@@ -74,12 +80,6 @@ function CurrentWeather(props: CurrentWeatherProps) {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  `
-  const H2 = styled.h2`
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    text-align: center;
   `
   return <Wrapper>
     <H2>Now</H2>
@@ -169,9 +169,12 @@ function Forecast(props: ForecastProps) {
   }
   lists = lists.splice(0, props.days)
 
-  return <ol>
-    {lists.map(x => <li key={x[0].dt.getTime()}><DayForecast list={x} /></li>)}
-  </ol>
+  return <div>
+    <H2>Forecast</H2>
+    <ol>
+      {lists.map(x => <li key={x[0].dt.getTime()}><DayForecast list={x} /></li>)}
+    </ol>
+  </div>
 }
 
 interface WeatherProps {
