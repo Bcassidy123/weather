@@ -48,20 +48,27 @@ export function Weather(props: WeatherProps) {
   const CountryName = styled.span`
     text-transform: capitalize;
   `
-  const Wrapper = styled.div`
-    display: grid;
-    grid-template-areas:
-      "heading heading"
-      "current forecast";
+  const DataDiv = styled.div`
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
   `
   const Heading = styled(H1)`
     grid-area: heading;
+  `
+  const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   `
   return <Wrapper>
     <Heading>
       <CountryCode>{props.countryCode}</CountryCode>, <CountryName>{props.cityName}</CountryName>
     </Heading>
-    <CurrentWeather data={currentWeatherData} />
-    <Forecast data={forecastData} />
+    <DataDiv>
+      <CurrentWeather data={currentWeatherData} />
+      <Forecast data={forecastData} />
+    </DataDiv>
   </Wrapper>
 }
