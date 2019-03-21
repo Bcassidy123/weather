@@ -1,6 +1,7 @@
 import React, { Component, useState, useRef } from 'react';
 import styled from 'styled-components'
 import { Weather } from './components/weather'
+import CountryCodes from './CountryCodes'
 
 const Form = styled.form`
   display: flex;
@@ -46,6 +47,7 @@ function App(props: any) {
   const [data, setData] = useState({ countryCode: 'UK', city: 'London' });
   const countryCodeRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
+  const countryCodes = CountryCodes.map(x => x.Code)
   return <Wrapper className="App">
     <Form onSubmit={(e) => {
       e.preventDefault();
@@ -57,8 +59,11 @@ function App(props: any) {
       <InputDiv>
         <Label>
           Country Code
-        <TextInput placeholder="UK" required ref={countryCodeRef} />
+        <TextInput placeholder="UK" list="countryCodes" required ref={countryCodeRef} />
         </Label>
+        <datalist id="countryCodes">
+          {countryCodes.map(x => <option key={x}>{x}</option>)}
+        </datalist>
         <Label>
           City
         <TextInput placeholder="London" required ref={cityRef} />
