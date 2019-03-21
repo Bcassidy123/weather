@@ -63,6 +63,6 @@ export function Weather(props: WeatherProps) {
       <CountryName>{props.cityName}</CountryName>
     </Heading>
     <CurrentWeather data={currentWeatherData} />
-    <Forecast data={forecastData} days={5} />
+    <Forecast data={forecastData} />
   </Wrapper>
 }

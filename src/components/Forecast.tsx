@@ -49,7 +49,6 @@ function DayForecast(props: DayForecastProps) {
 
 export interface ForecastProps {
   data: OpenWeather.Forecast.RootObject;
-  days: 1 | 2 | 3 | 4 | 5;
 }
 
 export default function Forecast(props: ForecastProps) {
@@ -67,7 +66,6 @@ export default function Forecast(props: ForecastProps) {
     dateString = currentDateString
     lists.push(data.filter(x => x.dt.toLocaleDateString() == dateString))
   }
-  lists = lists.splice(0, props.days)
 
   return <div>
     <H2>Forecast</H2>
