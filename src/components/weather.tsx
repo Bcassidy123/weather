@@ -62,8 +62,6 @@ interface CurrentWeatherProps {
 
 function CurrentWeather(props: CurrentWeatherProps) {
   const { data } = props;
-  const [details, setDetails] = useState(false)
-  const [autoDetailed, setAutoDetailed] = useState(true)
 
   const Temperatures = styled.div`
       display: flex;
@@ -71,46 +69,31 @@ function CurrentWeather(props: CurrentWeatherProps) {
       align-items: center;
       justify-content: center;
   `
-  const Details = styled.div`
-      margin: 0;
-      padding: 0;
-      background: none;
-      width: 250px;
-      height: 250px;
-  `
   const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   `
-  return <Wrapper >
+  return <Wrapper>
+    <img
+      width={250}
+      height={250}
+      src={process.env.PUBLIC_URL + `/assets/icons/${data.weather[0].icon}.svg`}
+    />
     <Temperatures>
       <Temperature temp={data.main.temp_min} fontSize={32} />
       <Temperature temp={data.main.temp} fontSize={48} />
       <Temperature temp={data.main.temp_max} fontSize={32} />
     </Temperatures>
-    <Details
-      onMouseEnter={() => autoDetailed && setDetails(true)}
-      onMouseLeave={() => autoDetailed && setDetails(false)}
-    >
-      <img
-        hidden={details}
-        width={250}
-        height={250}
-        src={process.env.PUBLIC_URL + `/assets/icons/${data.weather[0].icon}.svg`}
-      />
-      <div hidden={!details}>
-        <Detailed
-          temp={data.main.temp}
-          temp_min={data.main.temp_min}
-          temp_max={data.main.temp_max}
-          pressure={data.main.pressure}
-          humidity={data.main.humidity}
-          wind={data.wind}
-        />
-      </div>
-    </Details>
+    <Detailed
+      temp={data.main.temp}
+      temp_min={data.main.temp_min}
+      temp_max={data.main.temp_max}
+      pressure={data.main.pressure}
+      humidity={data.main.humidity}
+      wind={data.wind}
+    />
   </Wrapper>
 }
 
