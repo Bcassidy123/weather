@@ -79,7 +79,6 @@ function CurrentWeather(props: CurrentWeatherProps) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
   `
   return <Wrapper>
     <H2>Now</H2>
