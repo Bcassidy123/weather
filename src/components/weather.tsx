@@ -75,7 +75,14 @@ function CurrentWeather(props: CurrentWeatherProps) {
     align-items: center;
     justify-content: center;
   `
+  const H2 = styled.h2`
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    text-align: center;
+  `
   return <Wrapper>
+    <H2>Now</H2>
     <img
       width={250}
       height={250}
