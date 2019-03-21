@@ -4,16 +4,15 @@ import * as OpenWeather from '../api/openweather'
 import { kToC } from './Utility'
 import { H2 } from './Common'
 
-type DayForecastList = {
+type MidDayForecastList = {
   dt: Date;
   temp: number;
+  icon: string;
+  description: string;
 }[];
 
 interface DayForecastProps {
-  list: {
-    dt: Date;
-    temp: number;
-  }[]; // length > 4
+  list: MidDayForecastList; // length > 4
 }
 
 function MidDayForecast(props: DayForecastProps) {
@@ -26,6 +25,11 @@ function MidDayForecast(props: DayForecastProps) {
   const averageTemp = (props.list[3].temp + props.list[4].temp) / 2;
   return <Wrapper>
     <h3>{forecast.dt.getDate()}/{forecast.dt.getMonth() + 1}</h3>
+    <img
+      width={100}
+      height={100}
+      src={process.env.PUBLIC_URL + `/assets/icons/${forecast.icon}.svg`}
+    />
     <h3>{kToC(averageTemp).toFixed(1)}</h3>
   </Wrapper>
 }
@@ -37,10 +41,10 @@ export interface ForecastProps {
 export default function Forecast(props: ForecastProps) {
   const data = props.data.list.map(x => {
     const dt = new Date(x.dt * 1000)
-    return { dt, temp: x.main.temp }
+    return { dt, temp: x.main.temp, icon: x.weather[0].icon, description: x.weather[0].description }
   })
 
-  let lists: DayForecastList[] = []
+  let lists: MidDayForecastList[] = []
   let dateString: string = ''
   for (let i = 0; i < data.length; ++i) {
     const currentDateString = data[i].dt.toLocaleDateString()
@@ -57,15 +61,15 @@ export default function Forecast(props: ForecastProps) {
     justify-content: space-between;
     text-align: center;
   `
-  const Li = styled.li`
+  const Wrapper = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction:column;
     align-items: center;
   `
-  return <div>
+  return <Wrapper>
     <H2>Forecast</H2>
     <Ol>
       {middayLists.map(x => <li key={x[0].dt.getTime()}><MidDayForecast list={x} /></li>)}
     </Ol>
-  </div>
+  </Wrapper>
 }
