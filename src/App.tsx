@@ -1,7 +1,21 @@
-import React, { Component, useState, useRef } from 'react';
+import React, { Component, useState, useRef, useEffect } from 'react';
 import styled from 'styled-components'
 import { Weather } from './components/weather'
 import CountryCodes from './CountryCodes'
+import * as OpenWeather from './api/openweather'
+
+const apiKey = 'f8c4f24cc20aa33c6e45d6c1956b2b8e'
+async function fetchData(countryCode: string, city: string): Promise<{ currentWeather: OpenWeather.CurrentWeather.RootObject, forecast: OpenWeather.Forecast.RootObject }> {
+  const res = await Promise.all([
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&appid=${apiKey}`),
+    fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city},${countryCode}&appid=${apiKey}`)
+  ])
+  const [currentWeather, forecast] = await Promise.all(res.map(x => x.json()))
+  return {
+    currentWeather,
+    forecast
+  }
+}
 
 const Form = styled.form`
   display: flex;
@@ -44,42 +58,53 @@ const Wrapper = styled.div`
   height: 100%;
 `
 function App(props: any) {
-  const previousApp = localStorage.getItem('App')
-  let defaultState = { countryCode: 'UK', city: 'London' }
-  if (previousApp)
-    defaultState = JSON.parse(previousApp)
-  const [data, setData] = useState(defaultState);
+  const [inputState, setInputState] = useState(JSON.parse(localStorage.getItem('App') || JSON.stringify({
+    countryCode: 'UK', city: 'London'
+  })))
+  const [viewState, setViewState] = useState(JSON.parse(localStorage.getItem('Weather') || JSON.stringify({
+    currentWeather: OpenWeather.defaultCurrentWeather,
+    forecast: OpenWeather.defaultForecast
+  })))
+  useEffect(() => {
+    try {
+      fetchData(inputState.countryCode, inputState.city).then((state) => {
+        setViewState(state)
+        localStorage.setItem('Weather', JSON.stringify(state))
+      })
+    } catch (e) {
+      console.error(e.message)
+    }
+  }, [inputState])
+
   const countryCodeRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
   const countryCodes = CountryCodes.map(x => x.Code)
   return <Wrapper className="App">
     <Form onSubmit={(e) => {
       e.preventDefault();
-      setData({
+      const state = {
         countryCode: countryCodeRef!.current!.value,
         city: cityRef!.current!.value,
-      })
-      localStorage.setItem('App', JSON.stringify({
-        countryCode: countryCodeRef!.current!.value,
-        city: cityRef!.current!.value,
-      }))
+      }
+      setInputState(state)
+      localStorage.setItem('App', JSON.stringify(state))
     }} >
       <InputDiv>
         <Label>
           Country Code
-        <TextInput placeholder={data.countryCode} list="countryCodes" required ref={countryCodeRef} />
+        <TextInput placeholder={inputState.countryCode} list="countryCodes" required ref={countryCodeRef} />
         </Label>
         <datalist id="countryCodes">
           {countryCodes.map(x => <option key={x}>{x}</option>)}
         </datalist>
         <Label>
           City
-        <TextInput placeholder={data.city} required ref={cityRef} />
+        <TextInput placeholder={inputState.city} required ref={cityRef} />
         </Label>
       </InputDiv>
       <SubmitInput value="Search" ></SubmitInput>
     </Form>
-    <Weather cityName={data.city} countryCode={data.countryCode} />
+    <Weather currentWeather={viewState.currentWeather} forecast={viewState.forecast} />
   </Wrapper>
 }
 

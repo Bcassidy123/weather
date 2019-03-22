@@ -27,43 +27,17 @@ const Wrapper = styled.div`
 `
 
 interface WeatherProps {
-  cityName: string;
-  countryCode: string;
+  currentWeather: OpenWeather.CurrentWeather.RootObject;
+  forecast: OpenWeather.Forecast.RootObject;
 }
-
 export function Weather(props: WeatherProps) {
-  const previousWeather = localStorage.getItem('Weather')
-  let defaultState = {
-    currentWeather: OpenWeather.defaultCurrentWeather,
-    forecast: OpenWeather.defaultForecast
-  }
-  if (previousWeather) {
-    defaultState = JSON.parse(previousWeather)
-  }
-  const [data, setData] = useState(defaultState)
-
-  useEffect(() => {
-    Promise.all([
-      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${props.cityName},${props.countryCode}&appid=f8c4f24cc20aa33c6e45d6c1956b2b8e`),
-      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${props.cityName},${props.countryCode}&appid=f8c4f24cc20aa33c6e45d6c1956b2b8e`)
-    ]).then(res => {
-      Promise.all(res.map(res => res.json()))
-        .then(([currentWeather, forecast]) => {
-          if (currentWeather.cod == "404" || forecast.cod == "404")
-            return;
-          setData({ currentWeather, forecast })
-          localStorage.setItem('Weather', JSON.stringify({ currentWeather, forecast }))
-        })
-    })
-  }, [props.cityName, props.countryCode])
-
   return <Wrapper>
     <Heading>
-      <CountryCode>{data.currentWeather.sys.country}</CountryCode>, <CountryName>{data.currentWeather.name}</CountryName>
+      <CountryCode>{props.currentWeather.sys.country}</CountryCode>, <CountryName>{props.currentWeather.name}</CountryName>
     </Heading>
     <DataDiv>
-      <CurrentWeather data={data.currentWeather} />
-      <Forecast data={data.forecast} />
+      <CurrentWeather data={props.currentWeather} />
+      <Forecast data={props.forecast} />
     </DataDiv>
   </Wrapper>
 }
