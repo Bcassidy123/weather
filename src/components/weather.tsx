@@ -11,35 +11,20 @@ interface WeatherProps {
 }
 
 export function Weather(props: WeatherProps) {
-  const [currentWeatherData, setCurrentWeatherData] = useState(OpenWeather.defaultCurrentWeather)
-  const [forecastData, setForecastData] = useState(OpenWeather.defaultForecast)
+  const [data, setData] = useState({
+    currentWeather: OpenWeather.defaultCurrentWeather,
+    forecast: OpenWeather.defaultForecast
+  })
   useEffect(() => {
-    fetch(`https://samples.openweathermap.org/data/2.5/weather?q=${props.cityName},${props.countryCode}&appid=b6907d289e10d714a6e88b30761fae22`)
-      .then(res => {
-        console.log(res)
-        if (res.ok) {
-          res.json().then((json: OpenWeather.CurrentWeather.RootObject) => {
-            setCurrentWeatherData(json)
-          })
-        } else {
-          console.log(res.statusText)
-        }
-      }).catch((e) => {
-        console.log(e.message)
-      })
-    fetch(`https://samples.openweathermap.org/data/2.5/forecast?q=${props.cityName},${props.countryCode}&appid=b6907d289e10d714a6e88b30761fae22`)
-      .then(res => {
-        console.log(res)
-        if (res.ok) {
-          res.json().then((json: OpenWeather.Forecast.RootObject) => {
-            setForecastData(json)
-          })
-        } else {
-          console.log(res.statusText)
-        }
-      }).catch((e) => {
-        console.log(e.message)
-      })
+    Promise.all([
+      fetch(`https://samples.openweathermap.org/data/2.5/weather?q=${props.cityName},${props.countryCode}&appid=b6907d289e10d714a6e88b30761fae22`),
+      fetch(`https://samples.openweathermap.org/data/2.5/forecast?q=${props.cityName},${props.countryCode}&appid=b6907d289e10d714a6e88b30761fae22`)
+    ]).then(res => {
+      Promise.all(res.map(res => res.json()))
+        .then(([currentWeather, forecast]) => {
+          setData({ currentWeather, forecast })
+        })
+    })
   }, [props.cityName, props.countryCode])
 
   const CountryCode = styled.span`
@@ -67,8 +52,8 @@ export function Weather(props: WeatherProps) {
       <CountryCode>{props.countryCode}</CountryCode>, <CountryName>{props.cityName}</CountryName>
     </Heading>
     <DataDiv>
-      <CurrentWeather data={currentWeatherData} />
-      <Forecast data={forecastData} />
+      <CurrentWeather data={data.currentWeather} />
+      <Forecast data={data.forecast} />
     </DataDiv>
   </Wrapper>
 }
