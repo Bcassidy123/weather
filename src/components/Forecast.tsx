@@ -86,6 +86,8 @@ function MidDayForecast(props: DayForecastProps) {
       width={100}
       height={100}
       src={process.env.PUBLIC_URL + `/assets/icons/${forecast.icon}.svg`}
+      alt={forecast.description}
+      title={forecast.description}
     />
     <h3>{kToC(averageTemp).toFixed(1)}</h3>
   </Wrapper>

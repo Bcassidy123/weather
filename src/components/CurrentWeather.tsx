@@ -75,6 +75,8 @@ export default function CurrentWeather(props: CurrentWeatherProps) {
       width={250}
       height={250}
       src={process.env.PUBLIC_URL + `/assets/icons/${data.weather[0].icon}.svg`}
+      alt={data.weather[0].description}
+      title={data.weather[0].description}
     />
     <Temperatures>
       <Temperature temp={data.main.temp_min} fontSize={32} />
