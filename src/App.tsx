@@ -1,9 +1,11 @@
 import React, { Component, useState, useRef, useEffect } from 'react';
 import styled from 'styled-components'
 import { Weather } from './components/weather'
-import CountryCodes from './CountryCodes'
+import * as Countries from 'i18n-iso-countries'
 import * as OpenWeather from './api/openweather'
 
+Countries.registerLocale(require("i18n-iso-countries/langs/en.json"))
+const countries = Countries.getNames("en")
 const apiKey = 'f8c4f24cc20aa33c6e45d6c1956b2b8e'
 async function fetchData(countryCode: string, city: string): Promise<{ currentWeather: OpenWeather.CurrentWeather.RootObject, forecast: OpenWeather.Forecast.RootObject }> {
   const res = await Promise.all([
@@ -11,6 +13,8 @@ async function fetchData(countryCode: string, city: string): Promise<{ currentWe
     fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city},${countryCode}&appid=${apiKey}`)
   ])
   const [currentWeather, forecast] = await Promise.all(res.map(x => x.json()))
+  if (currentWeather.cod == '404' || forecast.cod == '404')
+    throw new Error("Bad city")
   return {
     currentWeather,
     forecast
@@ -59,7 +63,7 @@ const Wrapper = styled.div`
 `
 function App(props: any) {
   const [inputState, setInputState] = useState(JSON.parse(localStorage.getItem('App') || JSON.stringify({
-    countryCode: 'UK', city: 'London'
+    country: 'Australia', city: 'Melbourne'
   })))
   const [viewState, setViewState] = useState(JSON.parse(localStorage.getItem('Weather') || JSON.stringify({
     currentWeather: OpenWeather.defaultCurrentWeather,
@@ -67,35 +71,34 @@ function App(props: any) {
   })))
   useEffect(() => {
     try {
-      fetchData(inputState.countryCode, inputState.city).then((state) => {
+      fetchData(Countries.getAlpha2Code(inputState.country, 'en'), inputState.city).then((state) => {
         setViewState(state)
         localStorage.setItem('Weather', JSON.stringify(state))
+        localStorage.setItem('App', JSON.stringify(inputState))
       })
     } catch (e) {
       console.error(e.message)
     }
   }, [inputState])
 
-  const countryCodeRef = useRef<HTMLInputElement>(null);
+  const countryRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
-  const countryCodes = CountryCodes.map(x => x.Code)
+
   return <Wrapper className="App">
     <Form onSubmit={(e) => {
       e.preventDefault();
-      const state = {
-        countryCode: countryCodeRef!.current!.value,
+      setInputState({
+        country: countryRef!.current!.value,
         city: cityRef!.current!.value,
-      }
-      setInputState(state)
-      localStorage.setItem('App', JSON.stringify(state))
+      })
     }} >
       <InputDiv>
         <Label>
-          Country Code
-        <TextInput placeholder={inputState.countryCode} list="countryCodes" required ref={countryCodeRef} />
+          Country
+        <TextInput placeholder={inputState.country} list="countries" required ref={countryRef} />
         </Label>
-        <datalist id="countryCodes">
-          {countryCodes.map(x => <option key={x}>{x}</option>)}
+        <datalist id="countries">
+          {Object.values(countries).map(x => <option key={x}>{x}</option>)}
         </datalist>
         <Label>
           City
