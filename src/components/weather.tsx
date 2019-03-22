@@ -15,6 +15,10 @@ const DataDiv = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-evenly;
+  @media (max-width: 736px) {
+    display: flex;
+    flex-direction: column;
+  }
 `
 const Heading = styled(H1)`
   grid-area: heading;

@@ -58,8 +58,13 @@ const SubmitInput = styled.input.attrs({
 const Wrapper = styled.div`
   display: grid;
   grid-template-areas: "form view";
-  grid-template-columns: minmax(400px, 1fr) 2fr;
-  height: 100%;
+  grid-template-columns: minmax(450px, 1fr) 2fr;
+  height: 100%; 
+  min-width: 450px;
+  @media (max-width: 736px) {
+    display: flex;
+    flex-direction: column;
+  }
 `
 function App(props: any) {
   const [inputState, setInputState] = useState(JSON.parse(localStorage.getItem('App') || JSON.stringify({
