@@ -43,6 +43,8 @@ export function Weather(props: WeatherProps) {
     ]).then(res => {
       Promise.all(res.map(res => res.json()))
         .then(([currentWeather, forecast]) => {
+          if (currentWeather.cod == "404" || forecast.cod == "404")
+            return;
           setData({ currentWeather, forecast })
         })
     })
@@ -50,7 +52,7 @@ export function Weather(props: WeatherProps) {
 
   return <Wrapper>
     <Heading>
-      <CountryCode>{props.countryCode}</CountryCode>, <CountryName>{props.cityName}</CountryName>
+      <CountryCode>{data.currentWeather.sys.country}</CountryCode>, <CountryName>{data.currentWeather.name}</CountryName>
     </Heading>
     <DataDiv>
       <CurrentWeather data={data.currentWeather} />
