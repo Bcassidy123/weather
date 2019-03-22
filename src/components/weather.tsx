@@ -5,6 +5,27 @@ import CurrentWeather from './CurrentWeather'
 import Forecast from './Forecast'
 import { H1 } from './Common'
 
+const CountryCode = styled.span`
+  text-transform: uppercase;
+`
+const CountryName = styled.span`
+  text-transform: capitalize;
+`
+const DataDiv = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+`
+const Heading = styled(H1)`
+  grid-area: heading;
+`
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
 interface WeatherProps {
   cityName: string;
   countryCode: string;
@@ -27,26 +48,6 @@ export function Weather(props: WeatherProps) {
     })
   }, [props.cityName, props.countryCode])
 
-  const CountryCode = styled.span`
-    text-transform: uppercase;
-  `
-  const CountryName = styled.span`
-    text-transform: capitalize;
-  `
-  const DataDiv = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: space-evenly;
-  `
-  const Heading = styled(H1)`
-    grid-area: heading;
-  `
-  const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  `
   return <Wrapper>
     <Heading>
       <CountryCode>{props.countryCode}</CountryCode>, <CountryName>{props.cityName}</CountryName>
