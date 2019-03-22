@@ -54,6 +54,19 @@ const SubmitInput = styled.input.attrs({
   border-radius: 10px;
   border:0;
   padding: 10px;
+  box-shadow: 0px 4px;
+  &:hover {
+    opacity: 0.9;
+  }
+  &:active {
+    opacity: 0.9;
+    transform: translateY(3px);
+    box-shadow: 0px 1px;
+  }
+  &:focus {
+    opacity: 0.9;
+    outline: none;
+  }
 `
 const Wrapper = styled.div`
   display: grid;
