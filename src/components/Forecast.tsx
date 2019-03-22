@@ -57,7 +57,7 @@ function ForecastChart(props: ForecastChartProps) {
   }, [props])
 
   return <svg width={width} height={height}> console.log("something")}>
-    <path d={points!} fill='none' stroke='red' strokeWidth='3' />
+    <path d={points!} fill='none' stroke='turquoise' strokeWidth='3' />
     <g>
       {ps.map(p => <circle key={xScale(p.x)} cx={xScale(p.x)} cy={yScale(p.y)} r={3} fill="black" stroke="black" />)}
     </g>
