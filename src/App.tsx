@@ -44,7 +44,11 @@ const Wrapper = styled.div`
   height: 100%;
 `
 function App(props: any) {
-  const [data, setData] = useState({ countryCode: 'UK', city: 'London' });
+  const previousApp = localStorage.getItem('App')
+  let defaultState = { countryCode: 'UK', city: 'London' }
+  if (previousApp)
+    defaultState = JSON.parse(previousApp)
+  const [data, setData] = useState(defaultState);
   const countryCodeRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
   const countryCodes = CountryCodes.map(x => x.Code)
@@ -55,18 +59,22 @@ function App(props: any) {
         countryCode: countryCodeRef!.current!.value,
         city: cityRef!.current!.value,
       })
+      localStorage.setItem('App', JSON.stringify({
+        countryCode: countryCodeRef!.current!.value,
+        city: cityRef!.current!.value,
+      }))
     }} >
       <InputDiv>
         <Label>
           Country Code
-        <TextInput placeholder="UK" list="countryCodes" required ref={countryCodeRef} />
+        <TextInput placeholder={data.countryCode} list="countryCodes" required ref={countryCodeRef} />
         </Label>
         <datalist id="countryCodes">
           {countryCodes.map(x => <option key={x}>{x}</option>)}
         </datalist>
         <Label>
           City
-        <TextInput placeholder="London" required ref={cityRef} />
+        <TextInput placeholder={data.city} required ref={cityRef} />
         </Label>
       </InputDiv>
       <SubmitInput value="Search" ></SubmitInput>

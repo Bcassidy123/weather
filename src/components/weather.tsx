@@ -32,20 +32,27 @@ interface WeatherProps {
 }
 
 export function Weather(props: WeatherProps) {
-  const [data, setData] = useState({
+  const previousWeather = localStorage.getItem('Weather')
+  let defaultState = {
     currentWeather: OpenWeather.defaultCurrentWeather,
     forecast: OpenWeather.defaultForecast
-  })
+  }
+  if (previousWeather) {
+    defaultState = JSON.parse(previousWeather)
+  }
+  const [data, setData] = useState(defaultState)
+
   useEffect(() => {
     Promise.all([
-      fetch(`https://samples.openweathermap.org/data/2.5/weather?q=${props.cityName},${props.countryCode}&appid=b6907d289e10d714a6e88b30761fae22`),
-      fetch(`https://samples.openweathermap.org/data/2.5/forecast?q=${props.cityName},${props.countryCode}&appid=b6907d289e10d714a6e88b30761fae22`)
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${props.cityName},${props.countryCode}&appid=f8c4f24cc20aa33c6e45d6c1956b2b8e`),
+      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${props.cityName},${props.countryCode}&appid=f8c4f24cc20aa33c6e45d6c1956b2b8e`)
     ]).then(res => {
       Promise.all(res.map(res => res.json()))
         .then(([currentWeather, forecast]) => {
           if (currentWeather.cod == "404" || forecast.cod == "404")
             return;
           setData({ currentWeather, forecast })
+          localStorage.setItem('Weather', JSON.stringify({ currentWeather, forecast }))
         })
     })
   }, [props.cityName, props.countryCode])
