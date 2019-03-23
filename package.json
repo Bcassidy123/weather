@@ -9,6 +9,7 @@
     "@types/react": "16.8.8",
     "@types/react-dom": "16.8.2",
     "@types/styled-components": "^4.1.12",
+    "cities.json": "^1.1.5",
     "d3": "^5.9.2",
     "i18n-iso-countries": "^3.7.8",
     "react": "^16.8.4",

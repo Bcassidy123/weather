@@ -89,6 +89,18 @@ interface Status {
   loading: Boolean;
   error: Error | null;
 }
+interface Cities {
+  country: string;
+  list: string[];
+}
+interface CitiesJSON {
+  country: string;
+  name: string;
+}
+const citiesJSON: CitiesJSON[] = require('cities.json')
+function getCities(country: string) {
+  return citiesJSON.filter(x => x.country == country).map(x => x.name)
+}
 function App(props: any) {
   const [inputState, setInputState] = useState(JSON.parse(localStorage.getItem('App') || JSON.stringify({
     country: 'Australia', city: 'Melbourne'
@@ -101,6 +113,7 @@ function App(props: any) {
     loading: true,
     error: null
   })
+  const [cities, setCities] = useState<Cities>({ country: '', list: [] })
   function getData(country: string, city: string) {
     setStatus({
       loading: true,
@@ -140,15 +153,24 @@ function App(props: any) {
       <InputDiv>
         <Label>
           Country
-        <TextInput placeholder={inputState.country} list="countries" required ref={countryRef} />
+        <TextInput placeholder={inputState.country} list="countries" required ref={countryRef}
+            onBlur={(e) => {
+              const country = countryRef!.current!.value
+              const a2 = Countries.getAlpha2Code(country, 'en')
+              setCities({ country, list: getCities(a2) })
+            }}
+          />
         </Label>
         <datalist id="countries">
           {Object.values(countries).map(x => <option key={x}>{x}</option>)}
         </datalist>
         <Label>
           City
-        <TextInput placeholder={inputState.city} required ref={cityRef} />
+        <TextInput placeholder={inputState.city} list="cities" required ref={cityRef} />
         </Label>
+        <datalist id="cities">
+          {cities.list.map((x, i) => <option key={i}>{x}</option>)}
+        </datalist>
       </InputDiv>
       <SubmitInput value="Search" ></SubmitInput>
     </Form>
