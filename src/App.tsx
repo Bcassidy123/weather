@@ -81,16 +81,24 @@ const Wrapper = styled.div`
     flex-direction: column;
   }
 `
+interface ViewState {
+  currentWeather: OpenWeather.CurrentWeather.RootObject;
+  forecast: OpenWeather.Forecast.RootObject;
+}
+interface Status {
+  loading: Boolean;
+  error: Error | null;
+}
 function App(props: any) {
   const [inputState, setInputState] = useState(JSON.parse(localStorage.getItem('App') || JSON.stringify({
     country: 'Australia', city: 'Melbourne'
   })))
-  const [viewState, setViewState] = useState(JSON.parse(localStorage.getItem('Weather') || JSON.stringify({
+  const [viewState, setViewState] = useState<ViewState>({
     currentWeather: OpenWeather.defaultCurrentWeather,
     forecast: OpenWeather.defaultForecast
-  })))
-  const [status, setStatus] = useState<{ loading: Boolean, error: Error | null }>({
-    loading: false,
+  })
+  const [status, setStatus] = useState<Status>({
+    loading: true,
     error: null
   })
   function getData(country: string, city: string) {
@@ -108,7 +116,6 @@ function App(props: any) {
         country,
         city
       })
-      localStorage.setItem('Weather', JSON.stringify(state))
       localStorage.setItem('App', JSON.stringify({ country, city }))
     }).catch((e) => {
       setStatus({
