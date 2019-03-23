@@ -1,4 +1,4 @@
-import React, { Component, useState, useRef, useEffect } from 'react';
+import React, { Component, useState, useRef, useEffect, FormEvent } from 'react';
 import styled from 'styled-components'
 import { Weather } from './components/weather'
 import { Spinner } from './components/Spinner'
@@ -93,12 +93,19 @@ function App(props: any) {
     loading: false,
     error: null
   })
-  useEffect(() => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const country = countryRef!.current!.value
+    const city = cityRef!.current!.value
+    setInputState({
+      country,
+      city
+    })
     setStatus({
       loading: true,
       error: null
     })
-    fetchData(Countries.getAlpha2Code(inputState.country, 'en'), inputState.city).then((state) => {
+    fetchData(Countries.getAlpha2Code(country, 'en'), city).then((state) => {
       setViewState(state)
       setStatus({
         loading: false,
@@ -112,19 +119,13 @@ function App(props: any) {
         error: e
       })
     })
-  }, [inputState])
+  }
 
   const countryRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
 
   return <Wrapper className="App">
-    <Form onSubmit={(e) => {
-      e.preventDefault();
-      setInputState({
-        country: countryRef!.current!.value,
-        city: cityRef!.current!.value,
-      })
-    }} >
+    <Form onSubmit={onSubmit}>
       <InputDiv>
         <Label>
           Country
