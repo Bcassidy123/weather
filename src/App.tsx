@@ -93,15 +93,12 @@ function App(props: any) {
     loading: false,
     error: null
   })
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const country = countryRef!.current!.value
-    const city = cityRef!.current!.value
+  function getData(country: string, city: string) {
     setStatus({
       loading: true,
       error: null
     })
-    fetchData(Countries.getAlpha2Code(country, 'en'), city).then((state) => {
+    return fetchData(Countries.getAlpha2Code(country, 'en'), city).then((state) => {
       setViewState(state)
       setStatus({
         loading: false,
@@ -120,12 +117,19 @@ function App(props: any) {
       })
     })
   }
+  // Run once to initialize
+  useEffect(() => {
+    getData(inputState.country, inputState.city)
+  }, [])
 
   const countryRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
 
   return <Wrapper className="App">
-    <Form onSubmit={onSubmit}>
+    <Form onSubmit={(e) => {
+      e.preventDefault();
+      getData(countryRef!.current!.value, cityRef!.current!.value)
+    }}>
       <InputDiv>
         <Label>
           Country
