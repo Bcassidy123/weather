@@ -156,8 +156,10 @@ function App(props: any) {
         <TextInput placeholder={inputState.country} list="countries" required ref={countryRef}
             onBlur={(e) => {
               const country = countryRef!.current!.value
-              const a2 = Countries.getAlpha2Code(country, 'en')
-              setCities({ country, list: getCities(a2) })
+              if (cities.country != country) {
+                const a2 = Countries.getAlpha2Code(country, 'en')
+                setCities({ country, list: getCities(a2) })
+              }
             }}
           />
         </Label>
