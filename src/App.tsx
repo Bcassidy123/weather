@@ -158,7 +158,9 @@ function App(props: any) {
               const country = countryRef!.current!.value
               if (cities.country != country) {
                 const a2 = Countries.getAlpha2Code(country, 'en')
-                setCities({ country, list: getCities(a2) })
+                if (a2) {
+                  setCities({ country, list: getCities(a2) })
+                }
               }
             }}
           />
