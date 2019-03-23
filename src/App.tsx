@@ -97,10 +97,6 @@ function App(props: any) {
     e.preventDefault();
     const country = countryRef!.current!.value
     const city = cityRef!.current!.value
-    setInputState({
-      country,
-      city
-    })
     setStatus({
       loading: true,
       error: null
@@ -111,8 +107,12 @@ function App(props: any) {
         loading: false,
         error: null
       })
+      setInputState({
+        country,
+        city
+      })
       localStorage.setItem('Weather', JSON.stringify(state))
-      localStorage.setItem('App', JSON.stringify(inputState))
+      localStorage.setItem('App', JSON.stringify({ country, city }))
     }).catch((e) => {
       setStatus({
         loading: false,
