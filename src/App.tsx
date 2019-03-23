@@ -1,6 +1,8 @@
 import React, { Component, useState, useRef, useEffect } from 'react';
 import styled from 'styled-components'
 import { Weather } from './components/weather'
+import { Spinner } from './components/Spinner'
+import { SomethingWentWrong } from './components/SomethingWentWrong'
 import * as Countries from 'i18n-iso-countries'
 import * as OpenWeather from './api/openweather'
 
@@ -87,16 +89,29 @@ function App(props: any) {
     currentWeather: OpenWeather.defaultCurrentWeather,
     forecast: OpenWeather.defaultForecast
   })))
+  const [status, setStatus] = useState<{ loading: Boolean, error: Error | null }>({
+    loading: false,
+    error: null
+  })
   useEffect(() => {
-    try {
-      fetchData(Countries.getAlpha2Code(inputState.country, 'en'), inputState.city).then((state) => {
-        setViewState(state)
-        localStorage.setItem('Weather', JSON.stringify(state))
-        localStorage.setItem('App', JSON.stringify(inputState))
+    setStatus({
+      loading: true,
+      error: null
+    })
+    fetchData(Countries.getAlpha2Code(inputState.country, 'en'), inputState.city).then((state) => {
+      setViewState(state)
+      setStatus({
+        loading: false,
+        error: null
       })
-    } catch (e) {
-      console.error(e.message)
-    }
+      localStorage.setItem('Weather', JSON.stringify(state))
+      localStorage.setItem('App', JSON.stringify(inputState))
+    }).catch((e) => {
+      setStatus({
+        loading: false,
+        error: e
+      })
+    })
   }, [inputState])
 
   const countryRef = useRef<HTMLInputElement>(null);
@@ -125,7 +140,8 @@ function App(props: any) {
       </InputDiv>
       <SubmitInput value="Search" ></SubmitInput>
     </Form>
-    <Weather currentWeather={viewState.currentWeather} forecast={viewState.forecast} />
+    {status.error ? <SomethingWentWrong /> :
+      status.loading ? <Spinner /> : <Weather currentWeather={viewState.currentWeather} forecast={viewState.forecast} />}
   </Wrapper>
 }
 
